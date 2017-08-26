@@ -1,0 +1,20 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: green;
+}
+
+#gamer1-bons-block,
+#gamer2-bons-block {
+	height: 160px;
+	border: 1px solid #000;
+}
+
+#table-bons-block {
+	height: 200px;
+	overflow-x: auto;
+}
