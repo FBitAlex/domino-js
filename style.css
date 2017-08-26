@@ -20,7 +20,8 @@ body {
 	overflow-x: auto;
 }
 
-/* ===  bones === */
+
+/* === gamers bones === */
 .gamer-bones ul li {
 	float: left;
 	margin: 20px 5px;
@@ -44,3 +45,11 @@ body {
 .gamer-bones ul li .r {
 	border-bottom: none;
 }
+
+.gamer-bons-block-2 {
+	position: absolute;
+	width: 100%;
+	bottom: 0px;
+}
+
+/* === gamers bones === */

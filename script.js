@@ -3,10 +3,14 @@ $(document).ready( function() {
 	// инициализация базы
 	init();
 
+	// раздача костей
 	razdacha();
-	console.log("first_gamer = " + first_gamer);
+	
 	console.dir(baza);
 	console.dir(gamers_bones);
+	
+	// поиск первого хода
+	find_first(gamers_bones);
 
 });
 
