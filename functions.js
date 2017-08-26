@@ -21,6 +21,9 @@ var
 	gamers_bones = [];
 	base_bone_cnt = 28;
 
+	var dashboard = $('#dashboard');
+
+
 // инициализация базы
 function init () {
 	// создаем кости
@@ -34,26 +37,35 @@ function init () {
 	}
 }
 
+// <div id="gamer-bons-block-1" class="gamer-block">
 function razdacha () {
 		// раздача костяшек игрокам
 		var search_cht = base_bone_cnt-1;
 		for (gamer = 1; gamer <= gamer_cnt; gamer++) {
 			
-			var i = 0;
+			
+			dashboard.append("<div class='gamer-bons-block-" + gamer + " gamer-bones'><ul></ul></div>");
+			var i = 0,
+			ul_list = $(".gamer-bons-block-" + gamer + ' ul');
+			
 			gamers_bones[gamer] = [];
-				
-				//curr_gamer = gamers_bones[gamer];
 
 				while ( i < 7 ) {
 
 					rand_num = Math.floor(Math.random() * (search_cht + 1));
 					gamers_bones[gamer].push( baza[rand_num] );
+					
+					// отрисовываем элемент
+					ul_list.append("<li><div class='l'>" + baza[rand_num].l + " </div><div class='r'>" + baza[rand_num].r + " </div></li>");
+
+					// удалили из базы
 					baza.splice(rand_num, 1);
 					i++;
 					search_cht--;
+
+
 					//break;
 					// baza[rand_num];
-
 
 		// 			if ( baza[rand_num][2] == 0 ){
 		// 				baza[rand_num][2] = gamer; // ???
@@ -99,6 +111,15 @@ function razdacha () {
 		}
 }
 
+// отрисовка костей игроков
+// function render_gamers_bons {
+// 	for (gamer = 1; gamer <= gamer_cnt; gamer++) {
+// 		var curr_gamer = $('#gamer-bons-block' + gamer);
+		
+
+// 		curr_gamer.append('<>')
+// 	}
+// }
 
 /*
 baza = {
