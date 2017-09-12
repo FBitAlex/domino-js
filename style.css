@@ -22,6 +22,13 @@ body {
 
 
 /* === gamers bones === */
+.gamer-bones {
+	float: left;
+	width: 100%;
+}
+
+#table ul li,
+#bazar .bazar_bone,
 .gamer-bones ul li {
 	float: left;
 	margin: 20px 5px;
@@ -33,6 +40,8 @@ body {
 	border: 1px solid #FFF;
 }
 
+#table ul li .r,
+#table ul li .l,
 .gamer-bones ul li .r,
 .gamer-bones ul li .l {
 	padding: 10px 0;
@@ -42,14 +51,29 @@ body {
 	border-bottom: 1px solid #FFF;
 }
 
+#table ul li .r,
 .gamer-bones ul li .r {
 	border-bottom: none;
 }
 
 .gamer-bons-block-2 {
-	position: absolute;
 	width: 100%;
-	bottom: 0px;
 }
 
-/* === gamers bones === */
+
+#table {
+	float: left;
+    width: 80%;
+    height: 300px;
+    border-right: 1px solid #000;
+}
+
+#bazar {
+	float: left;
+    width: 20%;
+    height: 300px;
+}
+
+#gamer-bons-block-2 ul li:nth-child(1) {
+	display: none !important;
+}
