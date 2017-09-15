@@ -14,6 +14,17 @@ $(document).ready( function() {
 	// поиск первого хода
 	find_first(gamers_bones);
 
+	find_access_bones();
+	
+	//go_game();
+
+	
+	// $(".gamer-bones ul li").click( function () {
+	// 	console.log("CLICK");
+	// });
+
+	// $(".gamer-bones ul li").unbind("click");
+
 
 });
 
