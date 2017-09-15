@@ -14,7 +14,7 @@ $(document).ready( function() {
 	// поиск первого хода
 	find_first(gamers_bones);
 
-	find_access_bones();
+	// find_access_bones();
 	
 	//go_game();
 

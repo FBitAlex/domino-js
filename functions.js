@@ -42,14 +42,9 @@ function init () {
 // раздача костяшек игрокам
 function create_bazar_and_table () {
 	$('#dashboard .gamer-bons-block-1')
-		.after("<div id='bazar'><div class='bazar_bone'></div></div>")
+		.after("<div id='bazar'><div id='bazar_bone'></div></div>")
 		.after("<div id='table'><ul></ul></div>");
-		
-	// берем с базара кость
-	$(".bazar_bone").click(function () {
-		//	console.log('CLICK');
-	});
-
+	
 }
 
 // раздача костяшек игрокам
@@ -82,6 +77,8 @@ function razdacha () {
 			search_cnt--;
 		}
 	}
+	console.log("baza >>>");
+	console.dir(baza);
 }
 
 // поиск первого хода
@@ -132,12 +129,46 @@ function find_first () {
 
 function put_bone_to_table ( current_gamer, bone_num ) {
 	
-	console.log("bone_num > " + bone_num);
-	// добавление кости в массив стола
-	table.push(gamers_bones[current_gamer][bone_num]);
+	var bone_num_l, bone_num_r;
 
-	// перерисовка стола (добавить условие на проверку того в какой край ложить кость)
-	$('#table ul').append("<li><div class='l'>" + gamers_bones[current_gamer][bone_num].l + " </div><div class='r'>" + gamers_bones[current_gamer][bone_num].r + " </div></li>");
+	console.log("bone_num > " + bone_num);
+	
+	// запоминаем крайние числа
+	if ( left_bone == gamers_bones[current_gamer][bone_num].l ) {
+		left_bone = gamers_bones[current_gamer][bone_num].r;
+		
+		bone_num_r = gamers_bones[current_gamer][bone_num].l;
+		bone_num_l = gamers_bones[current_gamer][bone_num].r;
+
+		// перерисовка стола (добавить условие на проверку того в какой край ложить кость)
+		$('#table ul').prepend("<li><div class='l'>" + bone_num_l + " </div><div class='r'>" + bone_num_r + " </div></li>");
+
+	} else if ( left_bone == gamers_bones[current_gamer][bone_num].r ) {
+		left_bone = gamers_bones[current_gamer][bone_num].l;
+
+		bone_num_l = gamers_bones[current_gamer][bone_num].l;
+		bone_num_r = gamers_bones[current_gamer][bone_num].r;
+
+		// перерисовка стола (добавить условие на проверку того в какой край ложить кость)
+		$('#table ul').prepend("<li><div class='l'>" + bone_num_l + " </div><div class='r'>" + bone_num_r + " </div></li>");
+
+	} else if ( right_bone == gamers_bones[current_gamer][bone_num].l ) {
+		right_bone = gamers_bones[current_gamer][bone_num].r;
+
+		bone_num_l = gamers_bones[current_gamer][bone_num].l;
+		bone_num_r = gamers_bones[current_gamer][bone_num].r;
+
+		// перерисовка стола (добавить условие на проверку того в какой край ложить кость)
+		$('#table ul').append("<li><div class='l'>" + bone_num_l + " </div><div class='r'>" + bone_num_r + " </div></li>");
+
+	} else if ( right_bone == gamers_bones[current_gamer][bone_num].r ) {
+		right_bone = gamers_bones[current_gamer][bone_num].l;
+
+		bone_num_l = gamers_bones[current_gamer][bone_num].r;
+		bone_num_r = gamers_bones[current_gamer][bone_num].l;
+
+		$('#table ul').append("<li><div class='l'>" + bone_num_l + " </div><div class='r'>" + bone_num_r + " </div></li>");
+	}
 
 	// удаление кости с массива игрока
 	gamers_bones[current_gamer].splice(bone_num, 1);
@@ -146,7 +177,6 @@ function put_bone_to_table ( current_gamer, bone_num ) {
 	// перерисовка руки игрока
 	var bn = bone_num + 1;
 	$('.gamer-bons-block-' + current_gamer + ' li:nth-child('+ bn +')').remove();
-
 
 	// set_side_nums(gamers_bones[current_gamer][bone_num].l, gamers_bones[current_gamer][bone_num].r);
 	
@@ -161,19 +191,7 @@ function set_next_gamer () {
 	current_gamer = (current_gamer % gamer_cnt)+1;
 	console.log( 'current_gamer => ' + current_gamer );
 
-}
-
-function go_game () {
-// for	
-	// find_access_bones();
-
-	// if ( access_bones.length > 0 ) {
-
-
-	// } else {
-	// 	// проверка базара
-	// 	// передача хода следующему игроку
-	// }
+	find_access_bones();
 }
 
 function set_event_to_bone ( current_gamer, bone_num ) {
@@ -183,7 +201,9 @@ function set_event_to_bone ( current_gamer, bone_num ) {
 }
 
 function find_access_bones () {
-	var gamer_bones_cnt = gamers_bones[current_gamer].length;
+	var gamer_bones_cnt = gamers_bones[current_gamer].length,
+		is_have = false;
+	console.log("current_gamer ======>" +  current_gamer);
 	
 	for (i = 0; i < gamer_bones_cnt; i++) {
 		if (
@@ -194,18 +214,38 @@ function find_access_bones () {
 			) {	
 				// привязать события к доступным для хода костям текущего игрока
 				set_event_to_bone ( current_gamer, i+1 );
+				is_have = true;
 		}
 	}
 
-}
+	if ( !is_have ) {
+		// на базар (в baza - базар)
+		$("#bazar_bone").html('CLICK').addClass("go-on-bazar");
 
+		// даем возможность брать с базара кость
+		$("#bazar_bone").click(function () {
 
-// отрисовка стола 
- function render_table () {
-	for (gamer = 1; gamer <= gamer_cnt; gamer++) {
-		var curr_gamer = $('#gamer-bons-block' + gamer);
+			rand_num = Math.floor(Math.random() * (baza.length + 1));
+			gamers_bones[current_gamer].push( baza[rand_num] );
+			
+			ul_list = $(".gamer-bons-block-" + current_gamer + ' ul');
+			
+			// отрисовываем элемент
+			ul_list.append("<li><div class='l'>" + baza[rand_num].l + " </div><div class='r'>" + baza[rand_num].r + " </div></li>");
 
-		curr_gamer.append('<>')
+			// удалили из базы
+			baza.splice(rand_num, 1);
+
+		});
 	}
+
 }
 
+// // отрисовка стола 
+//  function render_table () {
+// 	for (gamer = 1; gamer <= gamer_cnt; gamer++) {
+// 		var curr_gamer = $('#gamer-bons-block' + gamer);
+
+// 		curr_gamer.append('<>')
+// 	}
+// }
