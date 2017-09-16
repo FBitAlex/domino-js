@@ -19,8 +19,8 @@ var
 	first_bone = -1,
 	current_gamer = 0, // кто первый ходит
 	dashboard = $('#dashboard'),
-	table = [], // массив стола
-
+	// table = [], // массив стола
+	is_have = false,
 	access_bones = [],
 
 	left_bone = -1;
@@ -172,15 +172,23 @@ function put_bone_to_table ( current_gamer, bone_num ) {
 
 	// удаление кости с массива игрока
 	gamers_bones[current_gamer].splice(bone_num, 1);
-	console.dir(table);
 
 	// перерисовка руки игрока
 	var bn = bone_num + 1;
 	$('.gamer-bons-block-' + current_gamer + ' li:nth-child('+ bn +')').remove();
 
-	// set_side_nums(gamers_bones[current_gamer][bone_num].l, gamers_bones[current_gamer][bone_num].r);
-	
-	set_next_gamer();
+	// закончена ли игра (остаток фишек на руках у походившего)
+	if ( gamers_bones[current_gamer].length ) {
+		// ход следующего игрока
+		set_next_gamer();
+	} else {
+		// конец игры
+		finish_game();
+	}
+}
+
+function finish_game () {
+	alert("Выиграл игрок " + current_gamer );
 }
 
 
@@ -200,46 +208,79 @@ function set_event_to_bone ( current_gamer, bone_num ) {
 	}).addClass("access-bone");
 }
 
+
+// 	gamers_bones[current_gamer][i].l == left_bone ||
+// 		gamers_bones[current_gamer][i].r == left_bone ||
+// 		gamers_bones[current_gamer][i].l == right_bone ||
+// 		gamers_bones[current_gamer][i].r == right_bone
+// }
+
 function find_access_bones () {
-	var gamer_bones_cnt = gamers_bones[current_gamer].length,
-		is_have = false;
+	is_have = false;
 	console.log("current_gamer ======>" +  current_gamer);
-	
-	for (i = 0; i < gamer_bones_cnt; i++) {
-		if (
-			gamers_bones[current_gamer][i].l == left_bone ||
-			gamers_bones[current_gamer][i].r == left_bone ||
-			gamers_bones[current_gamer][i].l == right_bone ||
-			gamers_bones[current_gamer][i].r == right_bone
-			) {	
-				// привязать события к доступным для хода костям текущего игрока
-				set_event_to_bone ( current_gamer, i+1 );
-				is_have = true;
+
+		for (i = 0; i < gamers_bones[current_gamer].length; i++) {
+			if (
+				gamers_bones[current_gamer][i].l == left_bone ||
+				gamers_bones[current_gamer][i].r == left_bone ||
+				gamers_bones[current_gamer][i].l == right_bone ||
+				gamers_bones[current_gamer][i].r == right_bone
+				) {	
+					// привязать события к доступным для хода костям текущего игрока
+					set_event_to_bone ( current_gamer, i+1 );
+					is_have = true;
+					
+					if ( baza.length ) {					
+						$("#bazar_bone").unbind("click").html('').removeClass("go-on-bazar");
+					} else {
+						$("#bazar_bone").hide();
+					}
+
+			}
 		}
-	}
 
-	if ( !is_have ) {
-		// на базар (в baza - базар)
-		$("#bazar_bone").html('CLICK').addClass("go-on-bazar");
+		if ( !is_have ) {
+			$("#bazar_bone").unbind("click");
 
-		// даем возможность брать с базара кость
-		$("#bazar_bone").click(function () {
-
-			rand_num = Math.floor(Math.random() * (baza.length + 1));
-			gamers_bones[current_gamer].push( baza[rand_num] );
-			
-			ul_list = $(".gamer-bons-block-" + current_gamer + ' ul');
-			
-			// отрисовываем элемент
-			ul_list.append("<li><div class='l'>" + baza[rand_num].l + " </div><div class='r'>" + baza[rand_num].r + " </div></li>");
-
-			// удалили из базы
-			baza.splice(rand_num, 1);
-
-		});
-	}
-
+			if ( baza.length ) {
+				// на базар ( массив baza )
+				$("#bazar_bone").html('CLICK').addClass("go-on-bazar");
+				set_event_to_bazar();
+			} else {
+				$("#bazar_bone").hide();
+				set_next_gamer();
+			}
+		} // end if
+		
 }
+
+
+function set_event_to_bazar () {
+	// даем возможность брать с базара кость
+	$("#bazar_bone").click(function () {
+
+		rand_num = Math.floor(Math.random() * baza.length );
+		
+		console.log( "nums => " + rand_num  + " <> " + baza.length);
+		console.dir(gamers_bones[current_gamer]);
+
+		gamers_bones[current_gamer].push( baza[rand_num] );
+		
+		ul_list = $(".gamer-bons-block-" + current_gamer + ' ul');
+		
+		// отрисовываем элемент
+		ul_list.append("<li><div class='l'>" + baza[rand_num].l + " </div><div class='r'>" + baza[rand_num].r + " </div></li>");
+
+		// удалили из базы
+		baza.splice(rand_num, 1);
+
+		console.log("take from bazar");
+
+		find_access_bones();
+
+	});
+}
+
 
 // // отрисовка стола 
 //  function render_table () {
